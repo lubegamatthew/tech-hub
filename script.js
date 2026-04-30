@@ -1,5 +1,5 @@
 // array of the products
-var products = [
+let products = [
     { id: 1, name: "Laptop", price: 3500000, stock: 5, image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=200&h=150&fit=crop" },
     { id: 2, name: "Mouse", price: 50000, stock: 10, image: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=200&h=150&fit=crop" },
     { id: 3, name: "Keyboard", price: 150000, stock: 8, image: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=200&h=150&fit=crop" },
@@ -9,27 +9,27 @@ var products = [
 ];
 
 // SArray of the shoping cart
-var cart = [];
+let cart = [];
 
 
-var TAX_RATE = 0.10; // 10% tax
-var CURRENCY_SYMBOL = "UGX";
+let TAX_RATE = 0.10; // 10% tax
+let CURRENCY_SYMBOL = "UGX";
 
-var orderCounter = 1000;
+let orderCounter = 1000;
 
 // function to display products on the page
 function displayProducts() {
-    var productsContainer = document.getElementById("products-container");
+    let productsContainer = document.getElementById("products-container");
     productsContainer.innerHTML = "";
 
     // looping through products array
-    for (var i = 0; i < products.length; i++) {
-        var product = products[i];
-        var card = document.createElement("div");
+    for (let i = 0; i < products.length; i++) {
+        let product = products[i];
+        let card = document.createElement("div");
         card.className = "product-card";
 
         // Checkin if the product is in stock
-        var buttonText = "Add to Cart";
+        let buttonText = "Add to Cart";
         if (product.stock <= 0) {
             buttonText = "Out of Stock";
         }
@@ -48,8 +48,8 @@ function displayProducts() {
 
 // function to add product to cart
 function addToCart(productId) {
-    var product = null;
-    for (var i = 0; i < products.length; i++) {
+    let product = null;
+    for (let i = 0; i < products.length; i++) {
         if (products[i].id === productId) {
             product = products[i];
             break;
@@ -61,8 +61,8 @@ function addToCart(productId) {
         return;
     }
 
-    var existingItem = null;
-    for (var i = 0; i < cart.length; i++) {
+    let existingItem = null;
+    for (let i = 0; i < cart.length; i++) {
         if (cart[i].productId === productId) {
             existingItem = cart[i];
             break;
@@ -71,7 +71,7 @@ function addToCart(productId) {
 
     if (existingItem !== null) {
         if (existingItem.quantity < product.stock) {
-            existingItem.quantity = existingItem.quantity + 1;
+            existingItem.quantity += 1;
         } else {
             alert("Cannot add more than available stock!");
             return;
@@ -90,8 +90,8 @@ function addToCart(productId) {
 
 // function to remove product from cart
 function removeFromCart(productId) {
-    var itemIndex = -1;
-    for (var i = 0; i < cart.length; i++) {
+    let itemIndex = -1;
+    for (let i = 0; i < cart.length; i++) {
         if (cart[i].productId === productId) {
             itemIndex = i;
             break;
@@ -100,7 +100,7 @@ function removeFromCart(productId) {
 
     if (itemIndex !== -1) {
         if (cart[itemIndex].quantity > 1) {
-            cart[itemIndex].quantity = cart[itemIndex].quantity - 1;
+            cart[itemIndex].quantity -= 1;
         } else {
             cart.splice(itemIndex, 1);
         }
@@ -111,9 +111,9 @@ function removeFromCart(productId) {
 
 // function to display cart
 function displayCart() {
-    var cartItemsContainer = document.getElementById("cart-items");
-    var emptyMessage = document.getElementById("empty-cart-message");
-    var cartSummary = document.getElementById("cart-summary");
+    let cartItemsContainer = document.getElementById("cart-items");
+    let emptyMessage = document.getElementById("empty-cart-message");
+    let cartSummary = document.getElementById("cart-summary");
 
     cartItemsContainer.innerHTML = "";
 
@@ -125,9 +125,9 @@ function displayCart() {
     cartSummary.classList.remove("hidden");
 
     // looping through the cart items
-    for (var i = 0; i < cart.length; i++) {
-        var item = cart[i];
-        var cartItem = document.createElement("div");
+    for (let i = 0; i < cart.length; i++) {
+        let item = cart[i];
+        let cartItem = document.createElement("div");
         cartItem.className = "cart-item";
 
         cartItem.innerHTML = "<div class='cart-item-info'>" +
@@ -149,11 +149,11 @@ function displayCart() {
 
 // function to calculate subtotal
 function calculateSubtotal() {
-    var subtotal = 0;
+    let subtotal = 0;
 
     // looping through the cart items and sum up prices
-    for (var i = 0; i < cart.length; i++) {
-        subtotal = subtotal + (cart[i].price * cart[i].quantity);
+    for (let i = 0; i < cart.length; i++) {
+        subtotal += cart[i].price * cart[i].quantity;
     }
 
     return subtotal;
@@ -170,9 +170,9 @@ function calculateTotal(subtotal, tax) {
 
 
 function updateCartSummary() {
-    var subtotal = calculateSubtotal();
-    var tax = calculateTax(subtotal);
-    var total = calculateTotal(subtotal, tax);
+    let subtotal = calculateSubtotal();
+    let tax = calculateTax(subtotal);
+    let total = calculateTotal(subtotal, tax);
 
     // update the display
     document.getElementById("subtotal").textContent = "UGX " + subtotal.toLocaleString();
@@ -182,7 +182,7 @@ function updateCartSummary() {
 
 // function to generate the order ID
 function generateOrderId() {
-    orderCounter = orderCounter + 1;
+    orderCounter += 1;
     return "ORD-" + orderCounter;
 }
 
@@ -194,17 +194,17 @@ function placeOrder() {
     }
 
     // calculating the final totals
-    var subtotal = calculateSubtotal();
-    var tax = calculateTax(subtotal);
-    var total = calculateTotal(subtotal, tax);
+    let subtotal = calculateSubtotal();
+    let tax = calculateTax(subtotal);
+    let total = calculateTotal(subtotal, tax);
 
-    var orderId = generateOrderId();
+    let orderId = generateOrderId();
 
-    for (var i = 0; i < cart.length; i++) {
-        var cartItem = cart[i];
-        for (var j = 0; j < products.length; j++) {
+    for (let i = 0; i < cart.length; i++) {
+        let cartItem = cart[i];
+        for (let j = 0; j < products.length; j++) {
             if (products[j].id === cartItem.productId) {
-                products[j].stock = products[j].stock - cartItem.quantity;
+                products[j].stock -= cartItem.quantity;
                 break;
             }
         }
