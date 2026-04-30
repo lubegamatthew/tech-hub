@@ -35,7 +35,7 @@ header p {
 }
 main {
     display: grid;
-    grid-template-columns: 2fr1fr;
+    grid-template-columns: 2fr 1fr;
     gap: 30px;
 }
 
