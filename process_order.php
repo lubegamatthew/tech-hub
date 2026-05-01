@@ -1,17 +1,17 @@
 <?php
 header('Content-Type: application/json');
 
-// defining the response array
+// Define response array
 $response = ['success' => false, 'message' => '', 'errors' => [], 'order_id' => '', 'total' => 0];
 
-// checking if it's a POST request
+// Check if it's a POST request
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $response['message'] = 'Invalid request method';
     echo json_encode($response);
     exit;
 }
 
-// getting the form form data
+// Get form data
 $name = trim($_POST['name'] ?? '');
 $phone = trim($_POST['phone'] ?? '');
 $email = trim($_POST['email'] ?? '');
@@ -20,31 +20,31 @@ $order_id = trim($_POST['order_id'] ?? '');
 $total = trim($_POST['total'] ?? '');
 $cart_items_json = $_POST['cart_items'] ?? '[]';
 
-// validation errors
+// Validation errors
 $errors = [];
 
-// validating name
+// Validate name
 if (empty($name)) {
     $errors['name'] = 'Please enter your name';
 } elseif (strlen($name) < 2) {
     $errors['name'] = 'Name must be at least 2 characters long';
 }
 
-// validating phone
+// Validate phone
 if (empty($phone)) {
     $errors['phone'] = 'Please enter your phone number';
 } elseif (!preg_match('/^\d{10,}$/', $phone)) {
     $errors['phone'] = 'Phone number must be at least 10 digits';
 }
 
-// validating email
+// Validate email
 if (empty($email)) {
     $errors['email'] = 'Please enter your email address';
 } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     $errors['email'] = 'Please enter a valid email address';
 }
 
-// validating location
+// Validate location
 if (empty($location)) {
     $errors['location'] = 'Please enter your delivery location';
 } elseif (strlen($location) < 5) {
@@ -78,7 +78,7 @@ $order_data = [
     'status' => 'pending'
 ];
 
-// Save order to file 
+// Save order to file
 $orders_file = 'orders.json';
 $existing_orders = [];
 

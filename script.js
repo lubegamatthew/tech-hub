@@ -221,70 +221,127 @@ function closeFormModal() {
 }
 
 function clearFormValidation() {
-    const formGroups = document.querySelectorAll(".form-group");
-    formGroups.forEach(group => {
-        group.classList.remove("error");
-        const errorSpan = group.querySelector(".error-message");
-        if (errorSpan) {
-            errorSpan.textContent = "";
+    // Using getElementsByTagName to iterate through all divs in the form
+    const form = document.getElementById("order-form");
+    const formDivs = form.getElementsByTagName("div");
+    for (let i = 0; i < formDivs.length; i++) {
+        if (formDivs[i].classList.contains("form-group")) {
+            formDivs[i].classList.remove("error");
+            // Using getElementsByTagName to find span within each div
+            const errorSpans = formDivs[i].getElementsByTagName("span");
+            for (let j = 0; j < errorSpans.length; j++) {
+                if (errorSpans[j].classList.contains("error-message")) {
+                    errorSpans[j].textContent = "";
+                }
+            }
         }
-    });
+    }
 }
 
 function validateForm() {
     let isValid = true;
     clearFormValidation();
 
-    // Validate name
+    // Validate name using getElementById
     const nameInput = document.getElementById("customer-name");
     const nameGroup = document.getElementById("name-group");
     if (!nameInput.value.trim()) {
         nameGroup.classList.add("error");
-        document.getElementById("name-error").textContent = "Please enter your name";
+        // Using getElementsByTagName to find error span
+        const errorSpans = nameGroup.getElementsByTagName("span");
+        for (let i = 0; i < errorSpans.length; i++) {
+            if (errorSpans[i].classList.contains("error-message")) {
+                errorSpans[i].textContent = "Please enter your name";
+            }
+        }
         isValid = false;
     } else if (nameInput.value.trim().length < 2) {
         nameGroup.classList.add("error");
-        document.getElementById("name-error").textContent = "Name must be at least 2 characters long";
+        const errorSpans = nameGroup.getElementsByTagName("span");
+        for (let i = 0; i < errorSpans.length; i++) {
+            if (errorSpans[i].classList.contains("error-message")) {
+                errorSpans[i].textContent = "Name must be at least 2 characters long";
+            }
+        }
         isValid = false;
     }
 
-    // Validate phone
-    const phoneInput = document.getElementById("customer-phone");
-    const phoneGroup = document.getElementById("phone-group");
-    if (!phoneInput.value.trim()) {
-        phoneGroup.classList.add("error");
-        document.getElementById("phone-error").textContent = "Please enter your phone number";
-        isValid = false;
-    } else if (!/^\d{10,}$/.test(phoneInput.value.trim())) {
-        phoneGroup.classList.add("error");
-        document.getElementById("phone-error").textContent = "Phone number must be at least 10 digits";
-        isValid = false;
+    // Validate phone using getElementsByName
+    const phoneInputs = document.getElementsByName("phone");
+    if (phoneInputs.length > 0) {
+        const phoneInput = phoneInputs[0];
+        const phoneGroup = document.getElementById("phone-group");
+        if (!phoneInput.value.trim()) {
+            phoneGroup.classList.add("error");
+            const errorSpans = phoneGroup.getElementsByTagName("span");
+            for (let i = 0; i < errorSpans.length; i++) {
+                if (errorSpans[i].classList.contains("error-message")) {
+                    errorSpans[i].textContent = "Please enter your phone number";
+                }
+            }
+            isValid = false;
+        } else if (!/^\d{10,}$/.test(phoneInput.value.trim())) {
+            phoneGroup.classList.add("error");
+            const errorSpans = phoneGroup.getElementsByTagName("span");
+            for (let i = 0; i < errorSpans.length; i++) {
+                if (errorSpans[i].classList.contains("error-message")) {
+                    errorSpans[i].textContent = "Phone number must be at least 10 digits";
+                }
+            }
+            isValid = false;
+        }
     }
 
-    // Validate email
-    const emailInput = document.getElementById("customer-email");
-    const emailGroup = document.getElementById("email-group");
-    if (!emailInput.value.trim()) {
-        emailGroup.classList.add("error");
-        document.getElementById("email-error").textContent = "Please enter your email address";
-        isValid = false;
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value.trim())) {
-        emailGroup.classList.add("error");
-        document.getElementById("email-error").textContent = "Please enter a valid email address";
-        isValid = false;
+    // Validate email using getElementsByName
+    const emailInputs = document.getElementsByName("email");
+    if (emailInputs.length > 0) {
+        const emailInput = emailInputs[0];
+        const emailGroup = document.getElementById("email-group");
+        if (!emailInput.value.trim()) {
+            emailGroup.classList.add("error");
+            const errorSpans = emailGroup.getElementsByTagName("span");
+            for (let i = 0; i < errorSpans.length; i++) {
+                if (errorSpans[i].classList.contains("error-message")) {
+                    errorSpans[i].textContent = "Please enter your email address";
+                }
+            }
+            isValid = false;
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value.trim())) {
+            emailGroup.classList.add("error");
+            const errorSpans = emailGroup.getElementsByTagName("span");
+            for (let i = 0; i < errorSpans.length; i++) {
+                if (errorSpans[i].classList.contains("error-message")) {
+                    errorSpans[i].textContent = "Please enter a valid email address";
+                }
+            }
+            isValid = false;
+        }
     }
 
-    // Validate location
-    const locationInput = document.getElementById("customer-location");
-    const locationGroup = document.getElementById("location-group");
-    if (!locationInput.value.trim()) {
-        locationGroup.classList.add("error");
-        document.getElementById("location-error").textContent = "Please enter your delivery location";
-        isValid = false;
-    } else if (locationInput.value.trim().length < 5) {
-        locationGroup.classList.add("error");
-        document.getElementById("location-error").textContent = "Location must be at least 5 characters long";
-        isValid = false;
+    // Validate location using getElementsByTagName
+    const textareas = document.getElementById("order-form").getElementsByTagName("textarea");
+    if (textareas.length > 0) {
+        const locationInput = textareas[0];
+        const locationGroup = document.getElementById("location-group");
+        if (!locationInput.value.trim()) {
+            locationGroup.classList.add("error");
+            const errorSpans = locationGroup.getElementsByTagName("span");
+            for (let i = 0; i < errorSpans.length; i++) {
+                if (errorSpans[i].classList.contains("error-message")) {
+                    errorSpans[i].textContent = "Please enter your delivery location";
+                }
+            }
+            isValid = false;
+        } else if (locationInput.value.trim().length < 5) {
+            locationGroup.classList.add("error");
+            const errorSpans = locationGroup.getElementsByTagName("span");
+            for (let i = 0; i < errorSpans.length; i++) {
+                if (errorSpans[i].classList.contains("error-message")) {
+                    errorSpans[i].textContent = "Location must be at least 5 characters long";
+                }
+            }
+            isValid = false;
+        }
     }
 
     return isValid;
@@ -354,7 +411,75 @@ function handleFormSubmit(event) {
                     if (products[j].id === cartItem.productId) {
                         products[j].stock -= cartItem.quantity;
                         break;
-                    }
+} // close setupEventListeners
+
+// Demonstration function showing all three Get Elements methods
+function demonstrateGetElementMethods() {
+    console.log("=== Demonstrating Get Elements Methods ===\n");
+    
+    // 1. getElementById() - returns a single element
+    console.log("1. getElementById() - Single Element Access:");
+    const orderForm = document.getElementById("order-form");
+    console.log("   - Found order form:", orderForm ? "Yes" : "No");
+    
+    const nameInput = document.getElementById("customer-name");
+    console.log("   - Found name input:", nameInput ? "Yes" : "No");
+    
+    const checkoutBtn = document.getElementById("checkout-btn");
+    console.log("   - Found checkout button:", checkoutBtn ? "Yes" : "No");
+    
+    const cancelBtn = document.getElementById("cancel-form-btn");
+    console.log("   - Found cancel button:", cancelBtn ? "Yes" : "No");
+    
+    // 2. getElementsByName() - returns a NodeList
+    console.log("\n2. getElementsByName() - Named Elements Collection:");
+    const phoneInputs = document.getElementsByName("phone");
+    console.log("   - Phone inputs found:", phoneInputs.length);
+    
+    const emailInputs = document.getElementsByName("email");
+    console.log("   - Email inputs found:", emailInputs.length);
+    
+    const locationInputs = document.getElementsByName("location");
+    console.log("   - Location inputs found:", locationInputs.length);
+    
+    const orderIdInputs = document.getElementsByName("order_id");
+    console.log("   - Order ID hidden inputs:", orderIdInputs.length);
+    
+    const totalInputs = document.getElementsByName("total");
+    console.log("   - Total hidden inputs:", totalInputs.length);
+    
+    // 3. getElementsByTagName() - returns an HTMLCollection
+    console.log("\n3. getElementsByTagName() - Tag-based Element Collections:");
+    if (orderForm) {
+        const formButtons = orderForm.getElementsByTagName("button");
+        console.log("   - Button elements in form:", formButtons.length);
+        for (let i = 0; i < formButtons.length; i++) {
+            console.log("     • Button", i + 1, "-", formButtons[i].textContent.trim());
+        }
+        
+        const formInputs = orderForm.getElementsByTagName("input");
+        console.log("   - Input elements in form:", formInputs.length);
+        
+        const formTextareas = orderForm.getElementsByTagName("textarea");
+        console.log("   - Textarea elements in form:", formTextareas.length);
+        
+        const formLabels = orderForm.getElementsByTagName("label");
+        console.log("   - Label elements in form:", formLabels.length);
+    }
+    
+    // Get all buttons in document using getElementsByTagName
+    const allButtons = document.getElementsByTagName("button");
+    console.log("\n   Total buttons in document:", allButtons.length);
+    
+    console.log("\n=== Demonstration Complete ===");
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    displayProducts();
+    setupEventListeners();
+    // Demonstrate getElement methods
+    demonstrateGetElementMethods();
+});
                 }
             }
 
