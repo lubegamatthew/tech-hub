@@ -367,7 +367,6 @@ function submitOrderToServer(formData) {
     })
     .catch(error => {
         console.error("Error:", error);
-        // Even if PHP fails, we'll process the order client-side
         return { success: true, order_id: formData.get("order_id"), total: formData.get("total") };
     });
 }
