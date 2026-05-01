@@ -362,7 +362,6 @@ function submitOrderToServer(formData) {
         try {
             return JSON.parse(data);
         } catch (e) {
-            // If response is not JSON, create a success response
             return { success: true, order_id: formData.get("order_id"), total: formData.get("total") };
         }
     })
@@ -411,68 +410,7 @@ function handleFormSubmit(event) {
                     if (products[j].id === cartItem.productId) {
                         products[j].stock -= cartItem.quantity;
                         break;
-} // close setupEventListeners
-
-// Demonstration function showing all three Get Elements methods
-function demonstrateGetElementMethods() {
-    console.log("=== Demonstrating Get Elements Methods ===\n");
-    
-    // 1. getElementById() - returns a single element
-    console.log("1. getElementById() - Single Element Access:");
-    const orderForm = document.getElementById("order-form");
-    console.log("   - Found order form:", orderForm ? "Yes" : "No");
-    
-    const nameInput = document.getElementById("customer-name");
-    console.log("   - Found name input:", nameInput ? "Yes" : "No");
-    
-    const checkoutBtn = document.getElementById("checkout-btn");
-    console.log("   - Found checkout button:", checkoutBtn ? "Yes" : "No");
-    
-    const cancelBtn = document.getElementById("cancel-form-btn");
-    console.log("   - Found cancel button:", cancelBtn ? "Yes" : "No");
-    
-    // 2. getElementsByName() - returns a NodeList
-    console.log("\n2. getElementsByName() - Named Elements Collection:");
-    const phoneInputs = document.getElementsByName("phone");
-    console.log("   - Phone inputs found:", phoneInputs.length);
-    
-    const emailInputs = document.getElementsByName("email");
-    console.log("   - Email inputs found:", emailInputs.length);
-    
-    const locationInputs = document.getElementsByName("location");
-    console.log("   - Location inputs found:", locationInputs.length);
-    
-    const orderIdInputs = document.getElementsByName("order_id");
-    console.log("   - Order ID hidden inputs:", orderIdInputs.length);
-    
-    const totalInputs = document.getElementsByName("total");
-    console.log("   - Total hidden inputs:", totalInputs.length);
-    
-    // 3. getElementsByTagName() - returns an HTMLCollection
-    console.log("\n3. getElementsByTagName() - Tag-based Element Collections:");
-    if (orderForm) {
-        const formButtons = orderForm.getElementsByTagName("button");
-        console.log("   - Button elements in form:", formButtons.length);
-        for (let i = 0; i < formButtons.length; i++) {
-            console.log("     • Button", i + 1, "-", formButtons[i].textContent.trim());
-        }
-        
-        const formInputs = orderForm.getElementsByTagName("input");
-        console.log("   - Input elements in form:", formInputs.length);
-        
-        const formTextareas = orderForm.getElementsByTagName("textarea");
-        console.log("   - Textarea elements in form:", formTextareas.length);
-        
-        const formLabels = orderForm.getElementsByTagName("label");
-        console.log("   - Label elements in form:", formLabels.length);
-    }
-    
-    // Get all buttons in document using getElementsByTagName
-    const allButtons = document.getElementsByTagName("button");
-    console.log("\n   Total buttons in document:", allButtons.length);
-    
-    console.log("\n=== Demonstration Complete ===");
-}
+} 
 
 document.addEventListener("DOMContentLoaded", function() {
     displayProducts();
