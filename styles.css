@@ -278,6 +278,11 @@ form {
     min-height: 45px;
 }
 
+.form-group.error textarea {
+    height: auto;
+    min-height: 45px;
+}
+
 .form-group .error-message {
     display: block;
     color: #e74c3c;

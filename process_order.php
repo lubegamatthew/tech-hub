@@ -1,17 +1,17 @@
 <?php
 header('Content-Type: application/json');
 
-// Define response array
+// defining the response array
 $response = ['success' => false, 'message' => '', 'errors' => [], 'order_id' => '', 'total' => 0];
 
-// Check if it's a POST request
+// checking if it's a POST request
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $response['message'] = 'Invalid request method';
     echo json_encode($response);
     exit;
 }
 
-// Get form data
+// getting the form form data
 $name = trim($_POST['name'] ?? '');
 $phone = trim($_POST['phone'] ?? '');
 $email = trim($_POST['email'] ?? '');
@@ -20,31 +20,31 @@ $order_id = trim($_POST['order_id'] ?? '');
 $total = trim($_POST['total'] ?? '');
 $cart_items_json = $_POST['cart_items'] ?? '[]';
 
-// Validation errors
+// validation errors
 $errors = [];
 
-// Validate name
+// validating name
 if (empty($name)) {
     $errors['name'] = 'Please enter your name';
 } elseif (strlen($name) < 2) {
     $errors['name'] = 'Name must be at least 2 characters long';
 }
 
-// Validate phone
+// validating phone
 if (empty($phone)) {
     $errors['phone'] = 'Please enter your phone number';
 } elseif (!preg_match('/^\d{10,}$/', $phone)) {
     $errors['phone'] = 'Phone number must be at least 10 digits';
 }
 
-// Validate email
+// validating email
 if (empty($email)) {
     $errors['email'] = 'Please enter your email address';
 } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     $errors['email'] = 'Please enter a valid email address';
 }
 
-// Validate location
+// validating location
 if (empty($location)) {
     $errors['location'] = 'Please enter your delivery location';
 } elseif (strlen($location) < 5) {
@@ -78,7 +78,7 @@ $order_data = [
     'status' => 'pending'
 ];
 
-// Save order to file (or you can use a database)
+// Save order to file 
 $orders_file = 'orders.json';
 $existing_orders = [];
 
@@ -89,22 +89,6 @@ if (file_exists($orders_file)) {
 
 $existing_orders[] = $order_data;
 file_put_contents($orders_file, json_encode($existing_orders, JSON_PRETTY_PRINT));
-
-// Send confirmation email (optional, commented out for safety)
-/*
-$to = $email;
-$subject = 'Order Confirmation - ' . $order_id;
-$message = "Thank you for your order!\n\n";
-$message .= "Order ID: " . $order_id . "\n";
-$message .= "Total: UGX " . number_format($total) . "\n";
-$message .= "Delivery Location: " . $location . "\n\n";
-$message .= "Items:\n";
-foreach ($cart_items as $item) {
-    $message .= "- " . $item['name'] . " x " . $item['quantity'] . " = UGX " . number_format($item['price'] * $item['quantity']) . "\n";
-}
-$headers = 'From: noreply@' . $_SERVER['HTTP_HOST'];
-@mail($to, $subject, $message, $headers);
-*/
 
 // Success response
 $response['success'] = true;
