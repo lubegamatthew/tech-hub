@@ -47,14 +47,45 @@
             </section>
         </main>
 
-        <!-- Order Confirmation Modal -->
-        <div id="order-modal" class="modal hidden">
+        <!-- Order Form Modal -->
+        <div id="order-form-modal" class="modal hidden">
             <div class="modal-content">
-                <h2>Order Confirmed!</h2>
-                <p>Thank you for your order.</p>
-                <p>Order ID: <span id="order-id"></span></p>
-                <p>Total: <span id="order-total"></span></p>
-                <button type="button" id="close-modal-btn" class="close-modal-btn">Close</button>
+                <h2>Complete Your Order</h2>
+                <form id="order-form" method="POST" action="process_order.php">
+                    <div class="form-group" id="name-group">
+                        <label for="customer-name">Full Name *</label>
+                        <input type="text" id="customer-name" name="name" >
+                        <span class="error-message" id="name-error"></span>
+                    </div>
+                    <div class="form-group" id="phone-group">
+                        <label for="customer-phone">Phone Number *</label>
+                        <input type="tel" id="customer-phone" name="phone" >
+                        <span class="error-message" id="phone-error"></span>
+                    </div>
+                    <div class="form-group" id="email-group">
+                        <label for="customer-email">Email Address *</label>
+                        <input type="email" id="customer-email" name="email" >
+                        <span class="error-message" id="email-error"></span>
+                    </div>
+                    <div class="form-group" id="location-group">
+                        <label for="customer-location">Delivery Location *</label>
+                        <textarea id="customer-location" name="location" rows="3" ></textarea>
+                        <span class="error-message" id="location-error"></span>
+                    </div>
+                    <input type="hidden" id="order-id-field" name="order_id">
+                    <input type="hidden" id="order-total-field" name="total">
+                    <div class="form-actions">
+                        <button type="button" id="cancel-form-btn" class="cancel-btn">Cancel</button>
+                        <button type="submit" class="submit-btn">Place Order</button>
+                    </div>
+                </form>
+                <div id="form-success-message" class="hidden">
+                    <h2>Order Confirmed!</h2>
+                    <p>Thank you for your order.</p>
+                    <p>Order ID: <span id="final-order-id"></span></p>
+                    <p>Total: <span id="final-order-total"></span></p>
+                    <button type="button" id="close-success-btn" class="close-modal-btn">Close</button>
+                </div>
             </div>
         </div>
     </div>

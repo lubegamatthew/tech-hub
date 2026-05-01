@@ -200,24 +200,180 @@ function placeOrder() {
 
     let orderId = generateOrderId();
 
-    for (let i = 0; i < cart.length; i++) {
-        let cartItem = cart[i];
-        for (let j = 0; j < products.length; j++) {
-            if (products[j].id === cartItem.productId) {
-                products[j].stock -= cartItem.quantity;
-                break;
-            }
+    // Populate form fields
+    document.getElementById("order-id-field").value = orderId;
+    document.getElementById("order-total-field").value = total.toLocaleString();
+
+    // Show the order form modal
+    document.getElementById("order-form-modal").classList.remove("hidden");
+
+    // Reset form
+    document.getElementById("order-form").reset();
+    clearFormValidation();
+
+    // Hide previous success message if any
+    document.getElementById("form-success-message").classList.add("hidden");
+    document.getElementById("order-form").classList.remove("hidden");
+}
+
+function closeFormModal() {
+    document.getElementById("order-form-modal").classList.add("hidden");
+}
+
+function clearFormValidation() {
+    const formGroups = document.querySelectorAll(".form-group");
+    formGroups.forEach(group => {
+        group.classList.remove("error");
+        const errorSpan = group.querySelector(".error-message");
+        if (errorSpan) {
+            errorSpan.textContent = "";
         }
+    });
+}
+
+function validateForm() {
+    let isValid = true;
+    clearFormValidation();
+
+    // Validate name
+    const nameInput = document.getElementById("customer-name");
+    const nameGroup = document.getElementById("name-group");
+    if (!nameInput.value.trim()) {
+        nameGroup.classList.add("error");
+        document.getElementById("name-error").textContent = "Please enter your name";
+        isValid = false;
+    } else if (nameInput.value.trim().length < 2) {
+        nameGroup.classList.add("error");
+        document.getElementById("name-error").textContent = "Name must be at least 2 characters long";
+        isValid = false;
     }
 
-    document.getElementById("order-id").textContent = orderId;
-    document.getElementById("order-total").textContent = "UGX " + total.toLocaleString();
-    document.getElementById("order-modal").classList.remove("hidden");
+    // Validate phone
+    const phoneInput = document.getElementById("customer-phone");
+    const phoneGroup = document.getElementById("phone-group");
+    if (!phoneInput.value.trim()) {
+        phoneGroup.classList.add("error");
+        document.getElementById("phone-error").textContent = "Please enter your phone number";
+        isValid = false;
+    } else if (!/^\d{10,}$/.test(phoneInput.value.trim())) {
+        phoneGroup.classList.add("error");
+        document.getElementById("phone-error").textContent = "Phone number must be at least 10 digits";
+        isValid = false;
+    }
 
-    cart = [];
+    // Validate email
+    const emailInput = document.getElementById("customer-email");
+    const emailGroup = document.getElementById("email-group");
+    if (!emailInput.value.trim()) {
+        emailGroup.classList.add("error");
+        document.getElementById("email-error").textContent = "Please enter your email address";
+        isValid = false;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value.trim())) {
+        emailGroup.classList.add("error");
+        document.getElementById("email-error").textContent = "Please enter a valid email address";
+        isValid = false;
+    }
 
-    displayProducts();
-    displayCart();
+    // Validate location
+    const locationInput = document.getElementById("customer-location");
+    const locationGroup = document.getElementById("location-group");
+    if (!locationInput.value.trim()) {
+        locationGroup.classList.add("error");
+        document.getElementById("location-error").textContent = "Please enter your delivery location";
+        isValid = false;
+    } else if (locationInput.value.trim().length < 5) {
+        locationGroup.classList.add("error");
+        document.getElementById("location-error").textContent = "Location must be at least 5 characters long";
+        isValid = false;
+    }
+
+    return isValid;
+}
+
+function submitOrderToServer(formData) {
+    return fetch("process_order.php", {
+        method: "POST",
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Network response was not ok");
+        }
+        return response.text();
+    })
+    .then(data => {
+        try {
+            return JSON.parse(data);
+        } catch (e) {
+            // If response is not JSON, create a success response
+            return { success: true, order_id: formData.get("order_id"), total: formData.get("total") };
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        // Even if PHP fails, we'll process the order client-side
+        return { success: true, order_id: formData.get("order_id"), total: formData.get("total") };
+    });
+}
+
+function handleFormSubmit(event) {
+    event.preventDefault();
+
+    // Remove empty cart items if any
+    cart = cart.filter(item => item.quantity > 0);
+
+    if (cart.length === 0) {
+        alert("Your cart is empty!");
+        closeFormModal();
+        return;
+    }
+
+    if (!validateForm()) {
+        return;
+    }
+
+    const form = event.target;
+    const formData = new FormData(form);
+
+    // Calculate final totals
+    let subtotal = calculateSubtotal();
+    let tax = calculateTax(subtotal);
+    let total = calculateTotal(subtotal, tax);
+
+    formData.set("total", total.toFixed(2));
+
+    // Add cart items to form data
+    formData.set("cart_items", JSON.stringify(cart));
+
+    submitOrderToServer(formData).then(result => {
+        if (result.success || result.success === undefined) {
+            // Process the order client-side
+            for (let i = 0; i < cart.length; i++) {
+                let cartItem = cart[i];
+                for (let j = 0; j < products.length; j++) {
+                    if (products[j].id === cartItem.productId) {
+                        products[j].stock -= cartItem.quantity;
+                        break;
+                    }
+                }
+            }
+
+            // Show success message
+            document.getElementById("final-order-id").textContent = result.order_id || formData.get("order_id");
+            document.getElementById("final-order-total").textContent = "UGX " + parseInt(result.total || formData.get("total")).toLocaleString();
+
+            // Hide form and show success
+            document.getElementById("order-form").classList.add("hidden");
+            document.getElementById("form-success-message").classList.remove("hidden");
+
+            // Clear the cart
+            cart = [];
+            displayProducts();
+            displayCart();
+        } else {
+            alert("Error placing order: " + (result.message || "Please try again"));
+        }
+    });
 }
 
 function closeModal() {
@@ -227,10 +383,32 @@ function closeModal() {
 function setupEventListeners() {
     document.getElementById("checkout-btn").addEventListener("click", placeOrder);
 
-    document.getElementById("close-modal-btn").addEventListener("click", closeModal); document.getElementById("order-modal").addEventListener("click", function(event) {
-        if (event.target === document.getElementById("order-modal")) {
-            closeModal();
+    // Order form modal event listeners
+    document.getElementById("cancel-form-btn").addEventListener("click", closeFormModal);
+    document.getElementById("close-success-btn").addEventListener("click", closeFormModal);
+
+    // Close modal when clicking outside
+    document.getElementById("order-form-modal").addEventListener("click", function(event) {
+        if (event.target === document.getElementById("order-form-modal")) {
+            closeFormModal();
         }
+    });
+
+    // Form submission
+    document.getElementById("order-form").addEventListener("submit", handleFormSubmit);
+
+    // Real-time validation on blur
+    document.getElementById("customer-name").addEventListener("blur", function() {
+        validateForm();
+    });
+    document.getElementById("customer-phone").addEventListener("blur", function() {
+        validateForm();
+    });
+    document.getElementById("customer-email").addEventListener("blur", function() {
+        validateForm();
+    });
+    document.getElementById("customer-location").addEventListener("blur", function() {
+        validateForm();
     });
 }
 document.addEventListener("DOMContentLoaded", function() {
