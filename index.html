@@ -55,7 +55,6 @@
         <!-- Order Form Modal -->
         <div id="order-form-modal" class="modal hidden">
             <div class="modal-content">
-                <h2>Complete Your Order</h2>
                 <form id="order-form" method="POST" action="process_order.php">
                     <div class="form-group" id="name-group">
                         <label for="customer-name">Full Name *</label>
@@ -85,8 +84,11 @@
                     </div>
                 </form>
                 <div id="form-success-message" class="hidden">
+                    <div class="logo-container">
+                        <img src="images/logo.png" alt="Cavendish Tech Hub Logo" class="logo">
+                    </div>
                     <h2>Order Confirmed!</h2>
-                    <p>Thank you for your order.</p>
+                    <p>Thank you for shopping with us.</p>
                     <p>Order ID: <span id="final-order-id"></span></p>
                     <p>Total: <span id="final-order-total"></span></p>
                     <button type="button" id="close-success-btn" class="close-modal-btn">Close</button>
