@@ -43,11 +43,6 @@ header {
     transform: scale(1.1);
 }
 
-header h1 {
-    font-size: 2rem;
-    margin-bottom: 5px;
-}
-
 header p {
     font-size: 1rem;
     opacity: 0.9;
@@ -295,20 +290,6 @@ form {
 .form-group.error textarea {
     height: auto;
     min-height: 45px;
-}
-
-.form-group.error textarea {
-    height: auto;
-    min-height: 45px;
-}
-
-.form-group .error-message {
-    display: block;
-    color: #e74c3c;
-    font-size: 0.85rem;
-    margin-top: 5px;
-    font-weight: bold;
-    min-height: 18px;
 }
 
 .form-actions {
