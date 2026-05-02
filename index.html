@@ -55,25 +55,25 @@
         <!-- Order Form Modal -->
         <div id="order-form-modal" class="modal hidden">
             <div class="modal-content">
-                <form id="order-form" method="POST" action="process_order.php">
+                <form id="order-form" method="POST" action="process_order.php" novalidate>
                     <div class="form-group" id="name-group">
                         <label for="customer-name">Full Name *</label>
-                        <input type="text" id="customer-name" name="name" >
+                        <input type="text" id="customer-name" name="name" required minlength="2">
                         <span class="error-message" id="name-error"></span>
                     </div>
                     <div class="form-group" id="phone-group">
                         <label for="customer-phone">Phone Number *</label>
-                        <input type="tel" id="customer-phone" name="phone" >
+                        <input type="tel" id="customer-phone" name="phone" required minlength="10" pattern="\d{10,}">
                         <span class="error-message" id="phone-error"></span>
                     </div>
                     <div class="form-group" id="email-group">
                         <label for="customer-email">Email Address *</label>
-                        <input type="email" id="customer-email" name="email" >
+                        <input type="email" id="customer-email" name="email" required>
                         <span class="error-message" id="email-error"></span>
                     </div>
                     <div class="form-group" id="location-group">
                         <label for="customer-location">Delivery Location *</label>
-                        <textarea id="customer-location" name="location" rows="3" ></textarea>
+                        <textarea id="customer-location" name="location" rows="3" required minlength="5"></textarea>
                         <span class="error-message" id="location-error"></span>
                     </div>
                     <input type="hidden" id="order-id-field" name="order_id">

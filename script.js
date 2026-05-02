@@ -239,6 +239,17 @@ function clearFormValidation() {
     }
 }
 
+function showError(groupId, errorId, message) {
+    const group = document.getElementById(groupId);
+    const errorSpan = document.getElementById(errorId);
+    if (group) {
+        group.classList.add("error");
+    }
+    if (errorSpan) {
+        errorSpan.textContent = message;
+    }
+}
+
 function submitOrderToServer(formData) {
     return fetch("process_order.php", {
         method: "POST",
@@ -266,6 +277,9 @@ function submitOrderToServer(formData) {
 function handleFormSubmit(event) {
     event.preventDefault();
 
+    // Clear previous validation states
+    clearFormValidation();
+
     // Remove empty cart items if any
     cart = cart.filter(item => item.quantity > 0);
 
@@ -287,6 +301,53 @@ function handleFormSubmit(event) {
 
     // Add cart items to form data
     formData.set("cart_items", JSON.stringify(cart));
+
+    // Client-side form validation
+    let hasErrors = false;
+
+    // Validate name
+    const name = formData.get("name")?.trim();
+    if (!name) {
+        showError("name-group", "name-error", "Please enter your name");
+        hasErrors = true;
+    } else if (name.length < 2) {
+        showError("name-group", "name-error", "Name must be at least 2 characters long");
+        hasErrors = true;
+    }
+
+    // Validate phone
+    const phone = formData.get("phone")?.trim();
+    if (!phone) {
+        showError("phone-group", "phone-error", "Please enter your phone number");
+        hasErrors = true;
+    } else if (!/^\d{10,}$/.test(phone)) {
+        showError("phone-group", "phone-error", "Phone number must be at least 10 digits");
+        hasErrors = true;
+    }
+
+    // Validate email
+    const email = formData.get("email")?.trim();
+    if (!email) {
+        showError("email-group", "email-error", "Please enter your email address");
+        hasErrors = true;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showError("email-group", "email-error", "Please enter a valid email address");
+        hasErrors = true;
+    }
+
+    // Validate location
+    const location = formData.get("location")?.trim();
+    if (!location) {
+        showError("location-group", "location-error", "Please enter your delivery location");
+        hasErrors = true;
+    } else if (location.length < 5) {
+        showError("location-group", "location-error", "Location must be at least 5 characters long");
+        hasErrors = true;
+    }
+
+    if (hasErrors) {
+        return;
+    }
 
     submitOrderToServer(formData).then(result => {
         if (result.success || result.success === undefined) {
@@ -314,7 +375,16 @@ function handleFormSubmit(event) {
             displayProducts();
             displayCart();
         } else {
-            alert("Error placing order: " + (result.message || "Please try again"));
+            // Handle server-side validation errors
+            if (result.errors) {
+                for (const field in result.errors) {
+                    if (result.errors.hasOwnProperty(field)) {
+                        showError(field + "-group", field + "-error", result.errors[field]);
+                    }
+                }
+            } else {
+                alert("Error placing order: " + (result.message || "Please try again"));
+            }
         }
     });
 }
